@@ -1,0 +1,237 @@
+:root {
+    --bg-main: #f0f4f8;
+    --white: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    
+    --header-bg: #1e293b;
+    --header-text: #ffffff;
+    
+    --radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+}
+
+.main-container {
+    padding: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Dashboard Header Card */
+.dashboard-header-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 0;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    border-left: 6px solid #3b82f6;
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+}
+
+.header-hero {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #f8fafc 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-image {
+    width: 200px;
+    height: 120px;
+    object-fit: cover;
+    border-right: 1px solid var(--border);
+}
+
+.header-text-part {
+    padding: 16px 32px;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-title h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e3a8a;
+}
+
+.title-icon {
+    color: #6366f1;
+    width: 28px;
+    height: 28px;
+}
+
+.card-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 16px 32px;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    outline: none;
+    color: #1e293b;
+    background-color: var(--white);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.custom-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.stats-group {
+    display: flex;
+    gap: 16px;
+}
+
+.stat-box {
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    min-width: 160px;
+    border: 1px solid transparent;
+}
+
+.stat-box.blue-box {
+    background-color: #eff6ff;
+    border-color: #dbeafe;
+}
+
+.stat-box.green-box {
+    background-color: #f0fdf4;
+    border-color: #dcfce7;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.blue-box .stat-label { color: #3b82f6; }
+.green-box .stat-label { color: #16a34a; }
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+/* Table Design */
+.table-container {
+    background-color: var(--white);
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    text-align: center;
+}
+
+td {
+    padding: 14px 20px;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Specific Columns Styling */
+.td-id {
+    font-weight: 700;
+    text-align: center;
+}
+
+.td-name {
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.td-inv {
+    font-family: monospace;
+    font-size: 13px;
+    color: #6366f1;
+    text-align: center;
+}
+
+.td-val {
+    font-weight: 700;
+    text-align: center;
+}
+
+.td-qty {
+    text-align: center;
+    font-weight: 600;
+}
+
+.td-param {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
