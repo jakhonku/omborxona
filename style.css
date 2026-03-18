@@ -76,10 +76,8 @@ body {
     overflow: hidden;
 
     position: sticky;
-
-    top: 20px;
-
-    z-index: 100;
+    top: 0;
+    z-index: 1000;
 
 }
 
@@ -379,6 +377,9 @@ th {
     border-right: 1px solid #334155;
     white-space: nowrap;
     overflow: hidden;
+    position: sticky;
+    top: 240px;
+    z-index: 900;
 }
 
 th:last-child {
@@ -473,6 +474,9 @@ tr:hover td {
     letter-spacing: 0.8px;
     padding: 8px 16px !important;
     border-bottom: 2px solid #3b82f6;
+    position: sticky;
+    top: 282px; /* Header card (240px) + th (42px) */
+    z-index: 850;
 }
 
 .group-icon {
@@ -515,7 +519,8 @@ tr:hover td {
     background: white;
     border-radius: 16px;
     padding: 30px;
-    width: 340px;
+    width: 450px;
+    max-width: 95vw;
     position: relative;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -543,15 +548,75 @@ tr:hover td {
 }
 
 .person-photo {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    object-fit: contain;
+    background-color: #f8fafc;
     margin: 0 auto 16px;
     display: block;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    border: 4px solid #f8fafc;
+    border: 1px solid #e2e8f0;
 }
+
+/* Carousel Styles */
+.carousel-container {
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.carousel-slides {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(30, 41, 59, 0.6);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.carousel-nav:hover {
+    background: rgba(30, 41, 59, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav.prev { left: 10px; }
+.carousel-nav.next { right: 10px; }
+
+.carousel-counter {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(30, 41, 59, 0.6);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+}
+
 
 #modalName {
     font-size: 20px;
