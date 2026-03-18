@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive URL Konvertori</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 680px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .header .icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .header h1 {
+            color: #f1f5f9;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea, input {
+            width: 100%;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+        }
+
+        textarea:focus, input:focus {
+            border-color: #3b82f6;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: #475569;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
+        }
+
+        .btn-copy {
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.4);
+            color: #10b981;
+        }
+
+        .btn-copy:hover {
+            background: rgba(16,185,129,0.25);
+        }
+
+        .result-box {
+            display: none;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .result-box.show { display: block; }
+
+        .result-url {
+            color: #34d399;
+            font-size: 13px;
+            word-break: break-all;
+            font-family: monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .result-label {
+            color: #6ee7b7;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preview-box {
+            display: none;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .preview-box.show { display: block; }
+
+        .preview-box img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            object-fit: cover;
+        }
+
+        .preview-label {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .error-box {
+            display: none;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 12px;
+            padding: 16px;
+            color: #f87171;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .error-box.show { display: block; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin: 24px 0;
+        }
+
+        .tip {
+            background: rgba(251,191,36,0.08);
+            border: 1px solid rgba(251,191,36,0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #fbbf24;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .tip strong { color: #fde68a; }
+
+        .copied-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copied-badge.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🔗</div>
+            <h1>Google Drive URL Konvertori</h1>
+            <p>Drive havolasini Sheet'ga kiritishga tayyor formatga o'giradi</p>
+        </div>
+
+        <div class="section">
+            <label>Google Drive Havolasi (bir yoki bir nechta)</label>
+            <textarea id="inputLinks" rows="5" placeholder="https://drive.google.com/file/d/1aBcDeFgHiJkLmN/view?usp=sharing&#10;&#10;Bir nechta havola uchun har birini yangi qatorga yozing..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" onclick="convert()">
+            ✨ Konvertatsiya Qilish
+        </button>
+
+        <div class="error-box" id="errorBox"></div>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-label">✅ Tayyor URL (Sheet K ustuniga kiriting):</div>
+            <div class="result-url" id="resultUrl"></div>
+            <button class="btn btn-copy" onclick="copyResult()">
+                📋 Nusxalash (Copy)
+                <span class="copied-badge" id="copiedBadge">Nusxalandi!</span>
+            </button>
+        </div>
+
+        <div class="preview-box" id="previewBox">
+            <div class="preview-label">Rasm ko'rinishi:</div>
+            <img id="previewImg" src="" alt="Rasm oldindan ko'rish" onerror="this.style.display='none'; document.getElementById('previewError').style.display='block'">
+            <div id="previewError" style="display:none; color:#f87171; font-size:13px; margin-top:8px;">
+                ⚠️ Rasm ko'rsatilmadi. Havola to'g'ri yoki rasm hammaga ochiq emasdir.
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="tip">
+            <strong>📌 Qanday ishlaydi:</strong><br>
+            1. Google Drive'ga kiring → Rasmni toping<br>
+            2. Rasmni o'ng tugma → "Havolani nusxalash" (Copy link)<br>
+            3. Shu sahifaga keltirib tashlang → "Konvertatsiya" tugmasini bosing<br>
+            4. Tayyor URL'ni nusxalab Google Sheet'dagi <strong>K ustuniga</strong> kiriting<br>
+            5. Saytni yangilang — rasm ko'rinadi! ✅
+        </div>
+    </div>
+
+    <script>
+        function extractId(url) {
+            url = url.trim();
+
+            // /file/d/ID/view format
+            let m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (m) return m[1];
+
+            // id= format (already converted)
+            m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (m) return m[1];
+
+            // open?id= format
+            m = url.match(/open\?id=([a-zA-Z0-9_-]+)/);
+            if (m) return m[1];
+
+            return null;
+        }
+
+        function convert() {
+            const input = document.getElementById('inputLinks').value.trim();
+            const resultBox = document.getElementById('resultBox');
+            const errorBox = document.getElementById('errorBox');
+            const previewBox = document.getElementById('previewBox');
+            const resultUrl = document.getElementById('resultUrl');
+
+            resultBox.classList.remove('show');
+            errorBox.classList.remove('show');
+            previewBox.classList.remove('show');
+
+            if (!input) {
+                errorBox.textContent = '⚠️ Iltimos, Google Drive havolasini kiriting!';
+                errorBox.classList.add('show');
+                return;
+            }
+
+            const lines = input.split('\n').filter(l => l.trim());
+            const results = [];
+
+            for (const line of lines) {
+                const id = extractId(line);
+                if (id) {
+                    results.push(`https://drive.google.com/uc?id=${id}`);
+                } else if (line.trim()) {
+                    results.push(`❌ ID topilmadi: ${line.trim()}`);
+                }
+            }
+
+            if (results.length === 0) {
+                errorBox.textContent = '❌ Hech qanday Google Drive havolasi topilmadi. To\'g\'ri havolani kiriting.';
+                errorBox.classList.add('show');
+                return;
+            }
+
+            const validUrls = results.filter(r => !r.startsWith('❌'));
+            resultUrl.textContent = results.join('\n');
+            resultBox.classList.add('show');
+
+            // Birinchi to'g'ri URL uchun preview ko'rsat
+            if (validUrls.length === 1) {
+                const img = document.getElementById('previewImg');
+                img.style.display = 'block';
+                document.getElementById('previewError').style.display = 'none';
+                img.src = validUrls[0];
+                previewBox.classList.add('show');
+            }
+        }
+
+        function copyResult() {
+            const text = document.getElementById('resultUrl').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const badge = document.getElementById('copiedBadge');
+                badge.classList.add('show');
+                setTimeout(() => badge.classList.remove('show'), 2000);
+            });
+        }
+
+        // Enter bilan ham ishlaydi
+        document.getElementById('inputLinks').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') convert();
+        });
+    </script>
+</body>
+</html>
