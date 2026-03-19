@@ -434,11 +434,13 @@ tr:hover td {
     font-weight: 600;
     color: #4f46e5;
     text-align: center;
+    white-space: nowrap;
 }
 
 .td-val {
     font-weight: 700;
-    text-align: center;
+    text-align: right;
+    padding-right: 20px;
     color: #0f172a;
 }
 

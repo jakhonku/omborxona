@@ -14,8 +14,8 @@ let modalPhotos = [];
 const COLUMN_DEFS = {
     id:          { label: 'N', width: '38px', class: 'td-id' },
     name:        { label: 'NOMI', width: '17%', class: 'td-name', isText: true },
-    inv_number:  { label: 'INV NUMBER', width: '105px', class: 'td-inv' },
-    serial:      { label: 'SERIYA R.', width: '85px', class: 'td-inv' },
+    inv_number:  { label: 'INV NUMBER', width: '180px', class: 'td-inv' },
+    serial:      { label: 'SERIYA R.', width: '180px', class: 'td-inv' },
     made_date:   { label: 'ISH. CHIQ. SANA', width: '80px', style: 'text-align: center; color: #64748b; font-size: 12px;' },
     quantity:    { label: 'SONI', width: '42px', class: 'td-qty' },
     price:       { label: 'SUMMA (SO\'M)', width: '95px', class: 'td-val', isPrice: true },
