@@ -15,8 +15,8 @@ const COLUMN_DEFS = {
     id:          { label: 'N', width: '38px', class: 'td-id' },
     name:        { label: 'NOMI', width: '17%', class: 'td-name', isText: true },
     inv_number:  { label: 'INV NUMBER', width: '105px', class: 'td-inv' },
-    made_date:   { label: 'ISH. CHIQ. SANA', width: '80px', style: 'text-align: center; color: #64748b; font-size: 12px;' },
     serial:      { label: 'SERIYA R.', width: '85px', class: 'td-inv' },
+    made_date:   { label: 'ISH. CHIQ. SANA', width: '80px', style: 'text-align: center; color: #64748b; font-size: 12px;' },
     quantity:    { label: 'SONI', width: '42px', class: 'td-qty' },
     price:       { label: 'SUMMA (SO\'M)', width: '95px', class: 'td-val', isPrice: true },
     parameters:  { label: 'PARAMETRLAR', width: '14%', class: 'td-param', isText: true },
@@ -148,18 +148,18 @@ function parseJSONData(jsonArr) {
         const COL = {
             id:          findCol('n', '№', 'num'),
             name:        findCol('nomi', 'name', 'наименование'),
-            inv:         findCol('inv number', 'inv', 'инв'),
+            inv_number:  findCol('inv number', 'inv', 'инв'),
+            serial:      findCol('серий', 'seriy', 'serial'),
+            made_date:   findCol('sana', 'date', 'ishlab', 'дата'),
             quantity:    findCol('soni', 'dona', 'quantity', 'кол'),
             price:       findCol('summa', 'suma', 'narx', 'price', 'сумма', 'sum'),
             parameters:  findCol('parametr', 'param', 'характер'),
             responsible: findCol("mas'ul", 'masul', 'ответ', 'responsible'),
             room:        findCol('kabinet', 'xona', 'room', 'кабин'),
             status:      findCol('holat', 'status', 'состо'),
-            serial:      findCol('серий', 'seriy', 'serial'),
             old_number:  findCol('stariy', 'stark', 'старый', 'eski'),
             photo:       findCol('foto', 'rasm', 'photo', 'image'),
             phone:       findCol('telefon', 'phone', 'тел'),
-            made_date:   findCol('sana', 'date', 'ishlab', 'дата'),
             info:        findCol('info', 'malumot', 'ma\'lumot'),
         };
 
@@ -203,7 +203,7 @@ function parseJSONData(jsonArr) {
             items.push({
                 id:           firstCol,
                 name:         getVal(COL.name),
-                inv_number:   getVal(COL.inv),
+                inv_number:   getVal(COL.inv_number),
                 quantity:     getNum(COL.quantity),
                 price:        COL.price !== -1 ? parseRawSum(String(row[COL.price] || '')) : 0,
                 parameters:   getVal(COL.parameters),
@@ -632,7 +632,7 @@ function generateAiReport() {
                 
                 html += `<li>
                     <strong style="color:#1e293b; font-size:15px;">${g.name}</strong> 
-                    <span class="status-badge" style="background:#e0e7ff; color:#3730a3; padding: 3px 8px; border-radius:8px; margin-left:10px;">x ${g.quantity} ta</span>
+                    <span class="status-badge" style="background:#e0e7ff; color:#3730a3; padding: 3px 8px; border-radius:8px; margin-left:10px;">${g.quantity} ta</span>
                     ${paramHtml}
                     <div style="font-size:13px; color:#64748b; margin-top:8px;">
                         <span style="display:inline-block; margin-right: 15px;"><i data-lucide="activity" style="width:14px; height:14px; margin-right:2px; vertical-align:middle;"></i> <b>Holati:</b> ${statusText}</span>
