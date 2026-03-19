@@ -25,7 +25,43 @@ const COLUMN_DEFS = {
     status:      { label: 'HOLAT', width: '75px', style: 'text-align: center;', isStatus: true }
 };
 
+const USERS = {
+    'admin': { pass: 'admin123', role: 'super', name: 'Super Admin (Barcha bo\'limlar)' },
+    'rttm': { pass: 'rttm123', role: 'rttm', name: 'RTTM Bo\'limi' },
+    'musiqa': { pass: 'musiqa123', role: 'musiqa', name: 'Musiqa Cholg\'ular Bo\'limi' }
+};
+
+function handleLogin() {
+    const u = document.getElementById('usernameInput').value.trim();
+    const p = document.getElementById('passwordInput').value.trim();
+    const err = document.getElementById('loginError');
+    if (USERS[u] && USERS[u].pass === p) {
+        localStorage.setItem('authRole', USERS[u].role);
+        localStorage.setItem('authName', USERS[u].name);
+        window.location.reload();
+    } else {
+        err.style.display = 'block';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('authRole');
+    localStorage.removeItem('authName');
+    window.location.reload();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    const role = localStorage.getItem('authRole');
+    if (!role) {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+        lucide.createIcons();
+        return; // Ma'lumotlarni yuklashni to'xtatish
+    } else {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+    }
+
     adjustStickyHeaders();
     window.addEventListener('resize', adjustStickyHeaders);
 
@@ -58,7 +94,18 @@ async function fetchDataFromSheet(isInitial = false) {
         globalInventoryData = data;
 
         // Barcha varaqlar nomini saqlab olamiz
-        availableSheets = jsonArr.map(s => s.sheetName);
+        let sheetsList = jsonArr.map(s => s.sheetName);
+        
+        // Ruxsatlarga qarab varaqlarni filtrlash
+        const role = localStorage.getItem('authRole');
+        if (role === 'rttm') {
+            sheetsList = sheetsList.filter(s => s.toLowerCase().includes('rttm'));
+        } else if (role === 'musiqa') {
+            sheetsList = sheetsList.filter(s => s.toLowerCase().includes('musiqa'));
+        }
+        
+        availableSheets = sheetsList;
+
         if (isInitial && availableSheets.length > 0) {
             currentSheet = availableSheets[0]; // birinchi varaq sukut bo'yicha tanlanadi
         }
@@ -205,6 +252,11 @@ function initApp() {
         currentFilter = e.target.value;
         renderTable();
     });
+
+    const reportBtn = document.getElementById('generateReportBtn');
+    if (reportBtn) {
+        reportBtn.addEventListener('click', generateAiReport);
+    }
 }
 
 function updateTabsAndFilters() {
@@ -466,11 +518,136 @@ document.addEventListener('click', function(e) {
     if (modal && modal.style.display === 'flex' && e.target === modal) {
         closePersonModal();
     }
+    const aiMdl = document.getElementById('aiModal');
+    if (aiMdl && aiMdl.style.display === 'flex' && e.target === aiMdl) {
+        closeAiModal();
+    }
 });
 
 // Escape tugmasi bilan yopish
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closePersonModal();
+        closeAiModal();
     }
 });
+
+// --- AI REPORT LOGIC ---
+function generateAiReport() {
+    const reportContainer = document.getElementById('aiReportContainer');
+    document.getElementById('aiModal').style.display = 'flex';
+    
+    // Simulate thinking state
+    reportContainer.innerHTML = '<div style="text-align:center; padding: 40px;"><i data-lucide="loader-2" class="animate-spin" style="width:36px; height:36px; color:#8b5cf6; margin: 0 auto;"></i><p style="margin-top:15px; color:#64748b; font-weight:600; font-size:16px;">Mukammal tahlil hisoboti tayyorlanmoqda...</p></div>';
+    lucide.createIcons();
+
+    setTimeout(() => {
+        let itemsToAnalyze = globalInventoryData.filter(i => i.sheet_name === currentSheet);
+        if (currentFilter !== 'all') {
+            itemsToAnalyze = itemsToAnalyze.filter(i => i.sub_category === currentFilter || i.main_category === currentFilter);
+        }
+
+        if (itemsToAnalyze.length === 0) {
+            reportContainer.innerHTML = '<p style="text-align:center; padding:20px;">Ushbu bo\'limda obektlar mavjud emas.</p>';
+            return;
+        }
+
+        // AI ga yangi bilimlarni (qanday toifalar / materiallar mavjudligini) o'rgatamiz:
+        const categoryMap = {}; // Barcha toifalar bazasi
+        let totalVal = 0;
+        let totalItems = 0;
+
+        itemsToAnalyze.forEach(item => {
+            // Jihoz qaysi toifaga (kategoriyaga) tegishli ekanligini topish
+            const cat = (item.sub_category && item.sub_category !== 'Umumiy') ? item.sub_category : item.main_category;
+            
+            if (!categoryMap[cat]) {
+                categoryMap[cat] = {
+                    totalSum: 0,
+                    count: 0,
+                    groups: {}
+                };
+            }
+            
+            // Xuddi yordamchi algoritm kabi nomi va turini bazaviy tozalab birlashtirish
+            let baseName = (item.name || 'Nomsiz uskuna').trim();
+            // Xar xil belgilarni olib tashlab umumiylashtirish (Qavslar, Vergullar, Maxsus sonli fraktsiyalar: 1/4, -1-4)
+            let coreName = baseName.split(',')[0].split('(')[0];
+            coreName = coreName.replace(/\s\d+\/\d+.*/g, ''); // " 1/4 октавы..." ni qirqadi
+            coreName = coreName.replace(/-\d+(-\d+)?.*/g, ''); // "-1-4" kabilarni qirqadi
+            coreName = coreName.replace(/[0-9]{5,}/g, ''); // 5 talik va undan katta bo'lgan seriyalarni qirqish
+            
+            let cleanName = coreName.replace(/\s+/g, ' ').trim().toLowerCase();
+            const key = cleanName;
+
+            if (!categoryMap[cat].groups[key]) {
+                 categoryMap[cat].groups[key] = {
+                     name: coreName.trim(), // Jihozning doimiy umumiy sof nomi (masalan: "Цифровое Фортепиано")
+                     quantity: 0,
+                     totalPrice: 0,
+                     statuses: {},
+                     paramsSet: new Set()
+                 };
+            }
+            
+            const paramText = (item.parameters || '').trim();
+            if (paramText && paramText !== '-') {
+                categoryMap[cat].groups[key].paramsSet.add(paramText);
+            }
+            
+            categoryMap[cat].groups[key].quantity += item.quantity;
+            categoryMap[cat].groups[key].totalPrice += (item.price * item.quantity);
+            
+            const st = item.status ? item.status.trim() : 'Mavjud';
+            categoryMap[cat].groups[key].statuses[st] = (categoryMap[cat].groups[key].statuses[st] || 0) + item.quantity;
+            
+            categoryMap[cat].totalSum += (item.price * item.quantity);
+            categoryMap[cat].count += item.quantity;
+            
+            totalVal += (item.price * item.quantity);
+            totalItems += item.quantity;
+        });
+
+        // Xisobotni Web Sahifaga chizish
+        let html = `<p style="font-size:16px;">Umumiy <strong>${totalItems} dona</strong> (jami qiymati <strong>${totalVal.toLocaleString()} so'm</strong>) bo'lgan barcha moddiy boyliklar quyidagi turkumlarga ajratib tahlil qilindi:</p>`;
+        
+        for (const [catName, catData] of Object.entries(categoryMap)) {
+            html += `<h4 style="margin-top:25px; color:#4338ca; border-bottom:2px solid #c7d2fe; padding-bottom:8px;">
+                <i data-lucide="folder-open" style="width:18px; margin-right:6px; vertical-align:text-bottom;"></i>
+                ${catName} 
+                <span style="font-size:13px; color:#475569; font-weight:normal; margin-left:10px;">(Jami ushbu guruhda: ${catData.count} ta uskuna, ${catData.totalSum.toLocaleString()} so'm)</span>
+            </h4>`;
+            
+            html += `<ul>`;
+            const sortedItems = Object.values(catData.groups).sort((a,b) => b.quantity - a.quantity);
+            
+            sortedItems.forEach(g => {
+                let statusText = Object.entries(g.statuses).map(([s, c]) => `<b style="color:#ef4444;">${c} ta</b> ${s}`).join(', ');
+                let paramHtml = '';
+                if (g.paramsSet.size > 0) {
+                    const pArr = Array.from(g.paramsSet);
+                    const pText = pArr.length > 2 ? 'Har xil parametrlar mavjud' : pArr.join(' | ');
+                    paramHtml = `<div style="font-size:13px; color:#64748b; margin-top:6px; padding: 4px; background:#f1f5f9; border-radius:4px;"><b>Parametri:</b> ${pText}</div>`;
+                }
+                
+                html += `<li>
+                    <strong style="color:#1e293b; font-size:15px;">${g.name}</strong> 
+                    <span class="status-badge" style="background:#e0e7ff; color:#3730a3; padding: 3px 8px; border-radius:8px; margin-left:10px;">x ${g.quantity} ta</span>
+                    ${paramHtml}
+                    <div style="font-size:13px; color:#64748b; margin-top:8px;">
+                        <span style="display:inline-block; margin-right: 15px;"><i data-lucide="activity" style="width:14px; height:14px; margin-right:2px; vertical-align:middle;"></i> <b>Holati:</b> ${statusText}</span>
+                        <span style="display:inline-block;"><i data-lucide="banknote" style="width:14px; height:14px; margin-right:2px; vertical-align:middle;"></i> <b>Narxi:</b> ${g.totalPrice > 0 ? g.totalPrice.toLocaleString() + " so'm" : "Belgilanmagan"}</span>
+                    </div>
+                </li>`;
+            });
+            html += `</ul>`;
+        }
+
+        reportContainer.innerHTML = html;
+        lucide.createIcons();
+    }, 1000);
+}
+
+function closeAiModal() {
+    document.getElementById('aiModal').style.display = 'none';
+}
