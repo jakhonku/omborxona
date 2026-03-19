@@ -26,12 +26,22 @@ const COLUMN_DEFS = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    adjustStickyHeaders();
+    window.addEventListener('resize', adjustStickyHeaders);
+
     fetchDataFromSheet(true);
     // Ma'lumotlarni har 10 soniyada orqa fonda avtomatik yangilash
     setInterval(() => {
         fetchDataFromSheet(false);
     }, 10000);
 });
+
+function adjustStickyHeaders() {
+    const card = document.querySelector('.dashboard-header-card');
+    if (card) {
+        document.documentElement.style.setProperty('--header-height', card.offsetHeight + 'px');
+    }
+}
 
 async function fetchDataFromSheet(isInitial = false) {
     const url = `${API_URL}?_t=${new Date().getTime()}`;
@@ -125,8 +135,10 @@ function parseJSONData(jsonArr) {
             // Kategoriya qatori (raqam emas)
             if (isNaN(firstCol)) {
                 const catName = firstCol;
-                if (current_main_category === sheetName) {
+                // Agar o'qilgan qator varaqning nomi bilan aynan bir xil bo'lsa yoki Asosiy vositalar bo'lsa
+                if (catName.trim().toLowerCase() === sheetName.trim().toLowerCase() || catName.trim().toLowerCase() === "asosiy vositalar") {
                     current_main_category = catName;
+                    current_sub_category = "Umumiy";
                 } else {
                     current_sub_category = catName;
                 }
@@ -351,6 +363,9 @@ function renderTable() {
     table.appendChild(tbody);
     updateStats(itemsToRender);
     lucide.createIcons();
+
+    // Jadval chizilgandan keyin ham balandlikni to'g'rilab yuboramiz
+    setTimeout(adjustStickyHeaders, 50);
 }
 
 

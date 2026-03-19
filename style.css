@@ -83,6 +83,8 @@ body {
 
 
 
+
+
 .header-hero {
 
     display: flex;
@@ -352,6 +354,8 @@ body {
     border-radius: 0;
     box-shadow: none;
     overflow-x: auto;
+    overflow-y: auto;
+    height: calc(100vh - var(--header-height, 225px) - 15px);
     margin-top: 12px;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -378,7 +382,7 @@ th {
     white-space: nowrap;
     overflow: hidden;
     position: sticky;
-    top: 240px;
+    top: 0;
     z-index: 900;
 }
 
@@ -475,7 +479,7 @@ tr:hover td {
     padding: 8px 16px !important;
     border-bottom: 2px solid #3b82f6;
     position: sticky;
-    top: 282px; /* Header card (240px) + th (42px) */
+    top: 42px; /* Height of th */
     z-index: 850;
 }
 
