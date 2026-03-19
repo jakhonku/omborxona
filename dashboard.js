@@ -12,14 +12,14 @@ let currentPhotoIndex = 0;
 let modalPhotos = [];
 
 const COLUMN_DEFS = {
-    id:          { label: 'N', width: '38px', class: 'td-id' },
+    id:          { label: '№', width: '42px', class: 'td-id' },
     name:        { label: 'NOMI', width: '17%', class: 'td-name', isText: true },
+    parameters:  { label: 'PARAMETRLAR', width: '14%', class: 'td-param', isText: true },
     inv_number:  { label: 'INV NUMBER', width: '180px', class: 'td-inv' },
     serial:      { label: 'SERIYA R.', width: '180px', class: 'td-inv' },
     made_date:   { label: 'ISH. CHIQ. SANA', width: '80px', style: 'text-align: center; color: #64748b; font-size: 12px;' },
     quantity:    { label: 'SONI', width: '42px', class: 'td-qty' },
     price:       { label: 'SUMMA (SO\'M)', width: '95px', class: 'td-val', isPrice: true },
-    parameters:  { label: 'PARAMETRLAR', width: '14%', class: 'td-param', isText: true },
     responsible: { label: 'MAS\'UL SHAXS', width: '12%', style: 'text-align: center;', isPerson: true },
     room:        { label: 'KABINET', width: '65px', style: 'text-align: center;' },
     status:      { label: 'HOLAT', width: '75px', style: 'text-align: center;', isStatus: true }
@@ -148,12 +148,12 @@ function parseJSONData(jsonArr) {
         const COL = {
             id:          findCol('n', '№', 'num'),
             name:        findCol('nomi', 'name', 'наименование'),
+            parameters:  findCol('parametr', 'param', 'характер'),
             inv_number:  findCol('inv number', 'inv', 'инв'),
             serial:      findCol('серий', 'seriy', 'serial'),
             made_date:   findCol('sana', 'date', 'ishlab', 'дата'),
             quantity:    findCol('soni', 'dona', 'quantity', 'кол'),
             price:       findCol('summa', 'suma', 'narx', 'price', 'сумма', 'sum'),
-            parameters:  findCol('parametr', 'param', 'характер'),
             responsible: findCol("mas'ul", 'masul', 'ответ', 'responsible'),
             room:        findCol('kabinet', 'xona', 'room', 'кабин'),
             status:      findCol('holat', 'status', 'состо'),

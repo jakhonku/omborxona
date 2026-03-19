@@ -377,7 +377,7 @@ th {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 12px 10px;
-    text-align: center;
+    text-align: center !important;
     border-right: 1px solid #334155;
     white-space: nowrap;
     overflow: hidden;
@@ -426,6 +426,7 @@ tr:hover td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
 }
 
 .td-inv {
